@@ -1,0 +1,91 @@
+SQL> SELECT e.Date_hired FROM Employees e, Nurses n WHERE e.Emp_ID = n.Nurse_ID AND n.Certificate = 'RN';
+
+DATE_HIRED
+----------
+20-FEB-05
+18-OCT-96
+
+
+
+
+SQL> SELECT p.Zip_code FROM Person p, Physician ph WHERE p.Person_ID = ph.Phys_ID AND ph.Speciality = 'ENT';
+
+ZIP_CODE
+--------
+20172
+20190
+
+
+
+
+
+SQL> SELECT p.Name FROM Person p, Volunteer v, Patients pa WHERE v.Volunteer_ID = pa.Patient_ID AND v.Volunteer_ID = p.Person_ID;
+
+NAME
+----------
+Preeti
+Marisa
+
+
+
+
+
+SQL> SELECT COUNT(*) FROM Patients pa WHERE pa.Phy_ID IN (SELECT p.Person_ID FROM Person p WHERE p.Name = 'Dr.Smith');
+
+  COUNT(*)
+----------
+         3
+
+
+
+
+
+SQL> SELECT Job_class, Staff_id from Staff WHERE Staff_ID IN (SELECT Person_id FROM Person WHERE Birth_date IN (SELECT max(Birth_date) FROM Person p, Staff st WHERE st.Staff_id = p.Person_ID GROUP BY Job_Class));
+
+JOB_CLASS  STAFF_ID
+---------- --------
+Dietician        22
+Therapist         3
+
+
+
+
+
+SQL> SELECT p.Phone FROM Person p, Outpatient o WHERE p.Person_ID = o.Out_ID AND o.Out_ID IN (SELECT v.O_ID FROM Visit v GROUP BY O_ID HAVING COUNT(*) > 2);
+
+PHONE
+----------
+7863426678
+5714562231
+
+
+
+
+
+SQL> SELECT l.Name FROM Lab l, Assigned a WHERE l.Name = a.Lname AND a.Ltech_ID IN (SELECT s.Tech_ID FROM Skill s GROUP BY Tech_ID HAVING COUNT(*) >=2);
+
+NAME
+--------------------------------------------------------------------------------
+Anderson
+Johnson
+
+
+
+
+
+SQL> SELECT ph.Pager# FROM Physician ph WHERE ph.Phys_ID NOT IN (SELECT pa.Phy_ID FROM Patients pa, Physician ph WHERE pa.Phy_ID = ph.Phys_ID);
+
+PAGER#
+------
+  7866
+
+
+
+
+
+SQL> SELECT name FROM Lab WHERE name NOT IN (SELECT lname FROM Assigned a WHERE NOT EXISTS (SELECT * FROM Skill s WHERE a.ltech_id = s.tech_id AND s.tskill = 'Chemical'));
+
+NAME
+--------------------------------------------------------------------------------
+Anderson
+Johnson
